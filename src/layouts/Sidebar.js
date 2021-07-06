@@ -15,13 +15,13 @@ export default function Sidebar() {
   return (
     <Menu vertical>
       <Menu.Item>
-        <Input size="mini" type="number" placeholder="Min Salary">
+        <Input size="mini" type="number" placeholder="En Düşük Maaş">
           <Label basic>₺</Label>
           <input />
         </Input>
       </Menu.Item>
       <Menu.Item>
-        <Input size="mini" type="number" placeholder="Max Salary">
+        <Input size="mini" type="number" placeholder="En Yüksek Maaş">
           <Label basic>₺</Label>
           <input />
         </Input>

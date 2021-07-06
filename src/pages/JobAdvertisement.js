@@ -14,14 +14,14 @@ export default function JobAdvertisement() {
   return (
     <Card.Group>
       {jobAdvertisements.map((jobAdvertisement) => (
-        <Card fluid>
+        <Card fluid key={jobAdvertisement.id}>
           <Card.Content>
             <Image
               floated="left"
               size="tiny"
               src="https://react.semantic-ui.com/images/wireframe/square-image.png"
             />
-            <Card.Header>{jobAdvertisement.jobTitle.title}</Card.Header>
+            <Card.Header as='a'>{jobAdvertisement.jobTitle.title}</Card.Header>
             <Card.Meta>{jobAdvertisement.city.city}</Card.Meta>
             <Card.Content>
             {jobAdvertisement.description}

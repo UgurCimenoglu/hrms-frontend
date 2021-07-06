@@ -2,6 +2,9 @@ import React from "react";
 import { Container, Grid } from "semantic-ui-react";
 import Sidebar from "./Sidebar";
 import JobAdvertisement from "../pages/JobAdvertisement";
+import JobDetail from "../pages/JobDetail";
+import CandidateCvDetail from "../pages/CandidateCvDetail";
+import EmployerDetail from "../pages/employerDetail";
 export default function Dashboard() {
   return (
     <div className="dashboard">
@@ -16,6 +19,8 @@ export default function Dashboard() {
             </Grid.Column>
           </Grid.Row>
         </Grid>
+        <CandidateCvDetail />
+        <EmployerDetail/>
       </Container>
     </div>
   );
