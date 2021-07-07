@@ -28,22 +28,24 @@ export default function JobDetail() {
                 Bulgarca konuşabilen EKİP ARKADAŞLARI ARAMAKTAYIZ!
               </Card.Description>
             </Card.Content>
-            <Card.Content extra>
+            <Card.Content >
               <Card.Description>
-                <strong>Maaş Aralığı :</strong> 5000-6500
+                <strong>Maaş Aralığı :</strong> 5000-6500 
               </Card.Description>
+              <br />
               <Card.Description>
                 <strong>Açık Pozisyon Sayısı :</strong> 1
               </Card.Description>
+              <br />
               <Card.Description>
                 <strong>Yayınlanma Tarihi :</strong> 01.07.2021
               </Card.Description>
             </Card.Content>
-            <Card.Content extra>
+            <Card.Content>
               <Button floated="right" color="teal">
                 Başvur!
-              </Button>
-            </Card.Content>
+              </Button></Card.Content>
+
           </Card>
         </Grid.Column>
         <Grid.Column width={4}>
@@ -54,11 +56,13 @@ export default function JobDetail() {
             <Card.Content>
               <Card.Description>
                 <strong>www.codeandmore.com</strong>
-                <hr />
+                <br />
+                <br />
               </Card.Description>
               <Card.Description>
                 <strong>codeandmore.gmail.com</strong>
-                <hr />
+                <br />
+                <br />
               </Card.Description>
               <Card.Description>
                 <strong>0555 555 55 55</strong>{" "}

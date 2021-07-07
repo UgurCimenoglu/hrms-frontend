@@ -21,6 +21,7 @@ export default function Dashboard() {
         </Grid>
         <CandidateCvDetail />
         <EmployerDetail/>
+        <JobDetail/>
       </Container>
     </div>
   );

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Divider,
   Header,
@@ -11,26 +11,24 @@ import {
   Card,
   Label,
   Rating,
+  Form,
+  Dropdown,
+  Radio
 } from "semantic-ui-react";
 import cvService from "../services/cvService";
 
-function exampleReducer(state, action) {
-  switch (action.type) {
-    case "OPEN_MODAL":
-      return { open: true, dimmer: action.dimmer };
-    case "CLOSE_MODAL":
-      return { open: false };
-    default:
-      throw new Error();
-  }
-}
-
 export default function EmployerDetail() {
-  const [state, dispatch] = React.useReducer(exampleReducer, {
-    open: false,
-    dimmer: undefined,
-  });
-  const { open, dimmer } = state;
+  const [jobAdvertisement, setJobAdvertisement] = useState(false);
+  let city = [
+    { key: 34, value: 34, text: "İstanbul" },
+    { key: 81, value: 81, text: "Düzce" },
+    { key: 71, value: 61, text: "Kırıkkale" },
+  ];
+  let position = [
+    { key: 1, value: 1, text: "DevOps" },
+    { key: 2, value: 2, text: "Software Developer" },
+    { key: 3, value: 3, text: "Graphic Designer" },
+  ];
 
   return (
     <Segment>
@@ -74,26 +72,63 @@ export default function EmployerDetail() {
             size="small"
             icon="add"
             color="grey"
-            onClick={() => dispatch({ type: "OPEN_MODAL", dimmer: "blurring" })}
+            onClick={() => setJobAdvertisement(true)}
           ></Button>
         </h3>
       </Divider>
       <Modal
-        dimmer={dimmer}
-        open={open}
-        onClose={() => dispatch({ type: "CLOSE_MODAL" })}
+        size="tiny"
+        open={jobAdvertisement}
+        onOpen={() => setJobAdvertisement(true)}
+        onClose={() => setJobAdvertisement(false)}
       >
-        <Modal.Header>Use Google's location service?</Modal.Header>
-        <Modal.Content>
-          Let Google help apps determine location. This means sending anonymous
-          location data to Google, even when no apps are running.
+        <Modal.Header>Add School</Modal.Header>
+        <Modal.Content scrolling>
+          <Form>
+            <Form.Field>
+              <label>Description</label>
+              <textarea placeholder="School" />
+            </Form.Field>
+            <Form.Field>
+              <label>City Name</label>
+              <Dropdown placeholder="City" selection options={city} />
+            </Form.Field>
+            <Form.Field>
+              <label>Job Position</label>
+              <Dropdown placeholder="Position" selection options={position} />
+            </Form.Field>
+            <Form.Field>
+              <label>Create Date</label>
+              <input type="date" placeholder="Start Date" />
+            </Form.Field>
+            <Form.Field>
+              <label>Deadline</label>
+              <input type="date" placeholder="Graduate Date" />
+            </Form.Field>
+            <Form.Field>
+              <label>Min Salary</label>
+              <input type="number" placeholder="Graduate Date" />
+            </Form.Field>
+            <Form.Field>
+              <label>Max Salary</label>
+              <input type="number" placeholder="Graduate Date" />
+            </Form.Field>
+            <Form.Field>
+              <label>Open Position</label>
+              <input type="number" placeholder="Graduate Date" />
+            </Form.Field>
+            <Form.Field>
+            <label>Active</label>
+            <Radio slider />
+            </Form.Field>
+          </Form>
         </Modal.Content>
         <Modal.Actions>
-          <Button negative onClick={() => dispatch({ type: "CLOSE_MODAL" })}>
-            Disagree
+          <Button negative onClick={() => setJobAdvertisement(false)}>
+            Cancel
           </Button>
-          <Button positive onClick={() => dispatch({ type: "CLOSE_MODAL" })}>
-            Agree
+          <Button positive onClick={() => setJobAdvertisement(false)}>
+            Add
           </Button>
         </Modal.Actions>
       </Modal>

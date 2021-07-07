@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Divider,
   Header,
@@ -16,36 +16,11 @@ import {
 } from "semantic-ui-react";
 import cvService from "../services/cvService";
 
-function educationReducer(state, action) {
-  switch (action.type) {
-    case "OPEN_MODAL":
-      return { open: true, dimmer: action.dimmer };
-    case "CLOSE_MODAL":
-      return { open: false };
-    default:
-      throw new Error();
-  }
-}
-
-function experienceReducer(state, action) {
-  switch (action.type) {
-    case "OPEN_MODAL":
-      return { open: true, dimmer: action.dimmer };
-    case "CLOSE_MODAL":
-      return { open: false };
-    default:
-      throw new Error();
-  }
-}
-
 export default function CandidateCvDetail() {
-  const [state, dispatch] = React.useReducer(educationReducer, {
-    open: false,
-    dimmer: undefined,
-  });
-
-  const { open, dimmer } = state;
-
+  const [eduOpen, setEduOpen] = useState(false);
+  const [expOpen, setExpOpen] = useState(false);
+  const [langOpen, setLangOpen] = useState(false);
+  const [skillsOpen, setSkillsOpen] = useState(false);
   return (
     <Segment>
       <Header as="h1" floated="left">
@@ -99,43 +74,43 @@ export default function CandidateCvDetail() {
             size="small"
             icon="add"
             color="grey"
-            onClick={() => dispatch({ type: "OPEN_MODAL", dimmer: "blurring" })}
+            onClick={() => setEduOpen(true)}
           ></Button>
         </h3>
       </Divider>
       <Modal
         size="tiny"
-        dimmer={dimmer}
-        open={open}
-        onClose={() => dispatch({ type: "CLOSE_MODAL" })}
+        open={eduOpen}
+        onOpen={() => setEduOpen(true)}
+        onClose={() => setEduOpen(false)}
       >
         <Modal.Header>Add School</Modal.Header>
         <Modal.Content>
           <Form>
             <Form.Field>
               <label>School Name</label>
-              <input placeholder="First Name" />
+              <input placeholder="School" />
             </Form.Field>
             <Form.Field>
               <label>Department Name</label>
-              <input placeholder="Last Name" />
+              <input placeholder="Department" />
             </Form.Field>
             <Form.Field>
               <label>Start Date</label>
-              <input type="date" placeholder="First Name" />
+              <input type="date" placeholder="Start Date" />
             </Form.Field>
             <Form.Field>
               <label>Graduate Date</label>
-              <input placeholder="First Name" />
+              <input type="date" placeholder="Graduate Date" />
             </Form.Field>
           </Form>
         </Modal.Content>
         <Modal.Actions>
-          <Button negative onClick={() => dispatch({ type: "CLOSE_MODAL" })}>
-            Disagree
+          <Button negative onClick={() => setEduOpen(false)}>
+            Cancel
           </Button>
-          <Button positive onClick={() => dispatch({ type: "CLOSE_MODAL" })}>
-            Agree
+          <Button positive onClick={() => setEduOpen(false)}>
+            Add
           </Button>
         </Modal.Actions>
       </Modal>
@@ -161,43 +136,43 @@ export default function CandidateCvDetail() {
             size="small"
             icon="add"
             color="grey"
-            onClick={() => dispatch({ type: "OPEN_MODAL", dimmer: "blurring" })}
+            onClick={() => setExpOpen(true)}
           ></Button>
         </h3>
       </Divider>
       <Modal
         size="tiny"
-        dimmer={dimmer}
-        open={open}
-        onClose={() => dispatch({ type: "CLOSE_MODAL" })}
+        // dimmer={dimmer}
+        open={expOpen}
+        onClose={() => setExpOpen(false)}
       >
-        <Modal.Header>Add School</Modal.Header>
+        <Modal.Header>Add Experience</Modal.Header>
         <Modal.Content>
           <Form>
             <Form.Field>
               <label>Workplace Name</label>
-              <input placeholder="First Name" />
+              <input placeholder="Workplace" />
             </Form.Field>
             <Form.Field>
               <label>Position Name</label>
-              <input placeholder="Last Name" />
+              <input placeholder="Position" />
             </Form.Field>
             <Form.Field>
               <label>Start Date</label>
-              <input type="date" placeholder="First Name" />
+              <input type="date" placeholder="Start Date" />
             </Form.Field>
             <Form.Field>
               <label>Leave Date</label>
-              <input placeholder="First Name" />
+              <input type="date" placeholder="Leave Date" />
             </Form.Field>
           </Form>
         </Modal.Content>
         <Modal.Actions>
-          <Button negative onClick={() => dispatch({ type: "CLOSE_MODAL" })}>
-            Disagree
+          <Button negative onClick={() => setExpOpen(false)}>
+            Cancel
           </Button>
-          <Button positive onClick={() => dispatch({ type: "CLOSE_MODAL" })}>
-            Agree
+          <Button positive onClick={() => setExpOpen(false)}>
+            Add
           </Button>
         </Modal.Actions>
       </Modal>
@@ -237,10 +212,38 @@ export default function CandidateCvDetail() {
             size="small"
             icon="add"
             color="grey"
-            onClick={() => dispatch({ type: "OPEN_MODAL", dimmer: "blurring" })}
+            onClick={() => setLangOpen(true)}
           ></Button>
         </h3>
       </Divider>
+      <Modal
+        size="tiny"
+        // dimmer={dimmer}
+        open={langOpen}
+        onClose={() => setLangOpen(false)}
+      >
+        <Modal.Header>Add Language</Modal.Header>
+        <Modal.Content>
+          <Form>
+            <Form.Field>
+              <label>Language</label>
+              <input placeholder="Language..." />
+            </Form.Field>
+            <Form.Field>
+              <label>Rating</label>
+              <input type="number" min="1" max="5" placeholder="Rating..." />
+            </Form.Field>
+          </Form>
+        </Modal.Content>
+        <Modal.Actions>
+          <Button negative onClick={() => setLangOpen(false)}>
+            Cancel
+          </Button>
+          <Button positive onClick={() => setLangOpen(false)}>
+            Add
+          </Button>
+        </Modal.Actions>
+      </Modal>
       <Card fluid>
         <Card.Content>
           <Button inverted icon="delete" color="red" floated="right"></Button>
@@ -283,10 +286,34 @@ export default function CandidateCvDetail() {
             size="small"
             icon="add"
             color="grey"
-            onClick={() => dispatch({ type: "OPEN_MODAL", dimmer: "blurring" })}
+            onClick={() => setSkillsOpen(true)}
           ></Button>
         </h3>
       </Divider>
+      <Modal
+        size="tiny"
+        // dimmer={dimmer}
+        open={skillsOpen}
+        onClose={() => setSkillsOpen(false)}
+      >
+        <Modal.Header>Add Skill</Modal.Header>
+        <Modal.Content>
+          <Form>
+            <Form.Field>
+              <label>Skill Name</label>
+              <input placeholder="Skill..." />
+            </Form.Field>
+          </Form>
+        </Modal.Content>
+        <Modal.Actions>
+          <Button negative onClick={() => setSkillsOpen(false)}>
+            Cancel
+          </Button>
+          <Button positive onClick={() => setSkillsOpen(false)}>
+            Add
+          </Button>
+        </Modal.Actions>
+      </Modal>
       <Card fluid>
         <Card.Content>
           <Button inverted icon="delete" color="red" floated="right"></Button>
