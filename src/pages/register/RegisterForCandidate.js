@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import {
   Button,
   Form,
@@ -67,7 +68,7 @@ export default function RegisterForCandidate() {
           </Segment>
         </Form>
         <Message>
-          Do you already have an account? <a href="#">Sign In</a>
+          Do you already have an account? <Link to="/">Sign Up</Link>
         </Message>
       </Grid.Column>
     </Grid>

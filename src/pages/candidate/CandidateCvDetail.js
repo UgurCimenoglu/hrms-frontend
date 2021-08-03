@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { Divider, Header, Segment } from "semantic-ui-react";
 import CandidateInfo from "./CandidateInfo";
 import CandidateEducation from "./CandidateEducation";

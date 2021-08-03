@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Grid, Card, Button } from "semantic-ui-react";
-import { useHistory, useParams } from "react-router";
+import { useParams } from "react-router";
 import JobAdvertisementService from "../services/jobAdvertisementService";
 export default function JobDetail() {
   const [jobDetail, setJobDetail] = useState({});
@@ -13,7 +13,7 @@ export default function JobDetail() {
       .getById(id)
       .then((result) => setJobDetail(result.data.data))
       .catch((err) => console.log(err));
-  }, []);
+  }, [id]);
   console.log(jobDetail);
   return (
     <Grid>

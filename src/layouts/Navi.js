@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useHistory } from "react-router";
-import { Dropdown, Menu, Button, Container } from "semantic-ui-react";
+import { Dropdown, Menu, Container } from "semantic-ui-react";
 import SignedIn from "./SignedIn";
 import SignedOut from "./SignedOut";
 export default function Navi() {

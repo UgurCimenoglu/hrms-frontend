@@ -14,23 +14,29 @@ export default function EmployerJobAdv(props) {
       .getAllByIsActiveAndEmployerId(40, true)
       .then((result) => setJobAdvertisements(result.data.data));
   }, []);
-  console.log(jobAdvertisements);
-  const setCurrentValues = (jobAdv) => {
-    handleformikValues.id = jobAdv.id;
-    handleformikValues.description = jobAdv.description;
-    handleformikValues.city.id = jobAdv.city.id;
-    handleformikValues.createDate = Moment(jobAdv.createDate).format("YYYY-MM-DD");
-    handleformikValues.deadline = Moment(jobAdv.deadline).format("YYYY-MM-DD");
-    handleformikValues.employer.id = jobAdv.employer.id;
-    handleformikValues.jobTitle.id = jobAdv.jobTitle.id;
-    handleformikValues.minSalary = jobAdv.minSalary;
-    handleformikValues.maxSalary = jobAdv.maxSalary;
-    handleformikValues.openPosition = jobAdv.openPosition;
-    handleformikValues.workingTime.id = jobAdv.workingTime.id;
-    handleformikValues.workingType.id = jobAdv.workingType.id;
-    handleformikValues.active = jobAdv.active;
-  };
 
+  console.log(jobAdvertisements)
+  const setCurrentValues = (jobAdv) => {
+    handleformikValues("id", jobAdv.id);
+    handleformikValues("description", jobAdv.description);
+    handleformikValues("city.id", jobAdv.city.id);
+    handleformikValues(
+      "createDate",
+      jobAdv.createDate ? Moment(jobAdv.createDate).format("YYYY-MM-DD") : ""
+    );
+    handleformikValues(
+      "deadline",
+      jobAdv.deadline ? Moment(jobAdv.deadline).format("YYYY-MM-DD") : ""
+    );
+    handleformikValues("employer.id", jobAdv.employer.id);
+    handleformikValues("jobTitle.id", jobAdv.jobTitle.id);
+    handleformikValues("minSalary", jobAdv.minSalary);
+    handleformikValues("maxSalary", jobAdv.maxSalary);
+    handleformikValues("openPosition", jobAdv.openPosition);
+    handleformikValues("workingTime.id", jobAdv.workingTime.id);
+    handleformikValues("workingType.id", jobAdv.workingType.id);
+    handleformikValues("active", jobAdv.active);
+  };
   return (
     <div>
       <Card.Group>

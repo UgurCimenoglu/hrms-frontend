@@ -23,7 +23,7 @@ export default function JobAdvertisement() {
               size="tiny"
               src="https://react.semantic-ui.com/images/wireframe/square-image.png"
             />
-            <Card.Header as="a">
+            <Card.Header >
               <Link to={`/jobdetail/${jobAdvertisement.id}`}>
                 {jobAdvertisement.jobTitle.title}
               </Link>
