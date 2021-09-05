@@ -1,11 +1,5 @@
-import React, { useState } from "react";
-import {
-  Button,
-  Divider,
-  Form,
-  Icon,
-  Modal,
-} from "semantic-ui-react";
+import React, { useEffect, useState } from "react";
+import { Button, Divider, Form, Header, Icon, Modal } from "semantic-ui-react";
 import { Formik } from "formik";
 import * as Yup from "yup";
 import UgurTextInput from "../../../utilities/customFormControls/UgurTextInput";
@@ -13,7 +7,13 @@ import educationService from "../../../services/educationService";
 import CandidateEduCard from "../education/CandidateEduCard";
 
 export default function CandidateEducation() {
+  const [educations, setEducations] = useState([]);
   const [eduOpen, setEduOpen] = useState(false);
+  const [deleteOpen, setDeleteOpen] = useState(false);
+
+  useEffect(() => {
+    getEducations();
+  }, []);
 
   const initialValues = {
     candidateCurriculumVitaes: {
@@ -41,6 +41,32 @@ export default function CandidateEducation() {
     graduateDate: Yup.date(),
   });
 
+  async function addOrUpdate(values) {
+    let eduService = new educationService();
+    await eduService
+      .add(JSON.stringify(values))
+      .then((result) => console.log(result))
+      .catch((e) => console.log(e));
+  }
+
+  async function deleteEdu(id) {
+    var eduService = new educationService();
+    await eduService
+      .deleteById(id)
+      .then((result) => console.log(result))
+      .catch((e) => console.log(e));
+  }
+
+  async function getEducations() {
+    let eduService = new educationService();
+    await eduService
+      .getByCvIdAndGraduateDesc(36)
+      .then((educations) => {
+        setEducations(educations.data.data);
+      })
+      .catch((e) => console.log(e));
+  }
+
   return (
     <div>
       <Divider horizontal>
@@ -58,13 +84,9 @@ export default function CandidateEducation() {
       <Formik
         initialValues={initialValues}
         validationSchema={EduSchema}
-        onSubmit={(values) => {
-          console.log(JSON.stringify(values));
-          let eduService = new educationService();
-          eduService
-            .add(JSON.stringify(values))
-            .then((result) => console.log(result))
-            .catch((e) => console.log(e));
+        onSubmit={async (values) => {
+          await addOrUpdate(values);
+          getEducations();
         }}
       >
         {(props) => (
@@ -107,14 +129,49 @@ export default function CandidateEducation() {
                 <Button negative onClick={() => setEduOpen(false)}>
                   Cancel
                 </Button>
-                <Button positive type="submit" onClick={()=>props.handleSubmit()}>
+                <Button
+                  positive
+                  type="submit"
+                  onClick={() => props.handleSubmit()}
+                >
                   Onayla
+                </Button>
+              </Modal.Actions>
+            </Modal>
+            <Modal
+              open={deleteOpen}
+              basic
+              size="small"
+              onClose={() => {
+                setDeleteOpen(false);
+              }}
+            >
+              <Header icon>
+                <Icon name="archive" />
+                Silmek istediğinize emin misiniz?
+              </Header>
+              
+              <Modal.Actions>
+                <Button  color="red" inverted onClick={() => {}}>
+                  <Icon name="remove" /> No
+                </Button>
+                <Button
+                  color="green"
+                  inverted
+                  onClick={async () => {
+                    await deleteEdu(props.values.id);
+                    getEducations();
+                  }}
+                >
+                  <Icon name="checkmark" /> Yes
                 </Button>
               </Modal.Actions>
             </Modal>
             <CandidateEduCard
               eduOpen={setEduOpen}
+              deleteOpen={setDeleteOpen}
               setFieldValue={props.setFieldValue}
+              educations={educations}
             />
           </div>
         )}
