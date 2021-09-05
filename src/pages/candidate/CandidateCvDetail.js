@@ -1,10 +1,10 @@
 import React from "react";
-import { Divider, Header, Segment } from "semantic-ui-react";
+import { Divider, Grid, Header, Segment } from "semantic-ui-react";
 import CandidateInfo from "./CandidateInfo";
-import CandidateEducation from "./CandidateEducation";
-import CandidateExperience from "./CandidateExperience";
-import CandidateLanguage from "./CandidateLanguage";
-import CandidateSkill from "./CandidateSkill";
+import CandidateEducation from "./education/CandidateEducation";
+import CandidateExperience from "./experience/CandidateExperience";
+import CandidateLanguage from "./language/CandidateLanguage";
+import CandidateSkill from "./skill/CandidateSkill";
 
 export default function CandidateCvDetail() {
   return (
@@ -12,13 +12,17 @@ export default function CandidateCvDetail() {
       <Header as="h1" floated="left">
         Curriculum Viate
       </Header>
-      <Divider clearing/>
+      <Divider clearing />
       <CandidateInfo />
-      
+
       <CandidateEducation />
       <CandidateExperience />
-      <CandidateLanguage />
-      <CandidateSkill />
+      <Grid>
+        <Grid.Row>
+          <Grid.Column width={8}><CandidateLanguage /></Grid.Column>
+          <Grid.Column width={8}><CandidateSkill /></Grid.Column>
+        </Grid.Row>
+      </Grid>
     </Segment>
   );
 }

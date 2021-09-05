@@ -1,18 +1,16 @@
 import React, { useState } from "react";
 import {
   Button,
-  Card,
   Divider,
   Form,
   Icon,
-  Image,
   Modal,
 } from "semantic-ui-react";
 import { Formik } from "formik";
 import * as Yup from "yup";
-import UgurTextInput from "../../utilities/customFormControls/UgurTextInput";
-import educationService from "../../services/educationService";
-import CandidateEduCard from "./CandidateEduCard";
+import UgurTextInput from "../../../utilities/customFormControls/UgurTextInput";
+import educationService from "../../../services/educationService";
+import CandidateEduCard from "../education/CandidateEduCard";
 
 export default function CandidateEducation() {
   const [eduOpen, setEduOpen] = useState(false);
@@ -62,11 +60,11 @@ export default function CandidateEducation() {
         validationSchema={EduSchema}
         onSubmit={(values) => {
           console.log(JSON.stringify(values));
-          // let eduService = new educationService();
-          // eduService
-          //   .add(JSON.stringify(values))
-          //   .then((result) => console.log(result))
-          //   .catch((e) => console.log(e));
+          let eduService = new educationService();
+          eduService
+            .add(JSON.stringify(values))
+            .then((result) => console.log(result))
+            .catch((e) => console.log(e));
         }}
       >
         {(props) => (
@@ -75,7 +73,10 @@ export default function CandidateEducation() {
               size="tiny"
               open={eduOpen}
               onOpen={() => setEduOpen(true)}
-              onClose={() => {setEduOpen(false);props.handleReset()}}
+              onClose={() => {
+                setEduOpen(false);
+                props.handleReset();
+              }}
             >
               <Modal.Header>Add School</Modal.Header>
               <Modal.Content>
@@ -106,7 +107,7 @@ export default function CandidateEducation() {
                 <Button negative onClick={() => setEduOpen(false)}>
                   Cancel
                 </Button>
-                <Button positive type="submit" onClick={props.handleSubmit}>
+                <Button positive type="submit" onClick={()=>props.handleSubmit()}>
                   Onayla
                 </Button>
               </Modal.Actions>

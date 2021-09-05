@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Button, Card, Image } from "semantic-ui-react";
-import educationService from "../../services/educationService";
+import educationService from "../../../services/educationService";
 import Moment from "moment";
 
 export default function CandidateEduCard(props) {
@@ -16,7 +16,7 @@ export default function CandidateEduCard(props) {
       .catch((e) => console.log(e));
   }, []);
 
-  const setFieldValue = (education)=>{
+  const setFieldValues = (education)=>{
       props.setFieldValue("schoolName" , education.schoolName)
       props.setFieldValue("schoolDepartment" , education.schoolDepartment)
       props.setFieldValue("startDate" , education.startDate?Moment(education.startDate).format("YYYY-MM-DD"):"")
@@ -34,7 +34,7 @@ export default function CandidateEduCard(props) {
               icon="edit"
               color="green"
               floated="right"
-              onClick={() => {props.eduOpen(true); setFieldValue(education)}}
+              onClick={() => {props.eduOpen(true); setFieldValues(education)}}
             ></Button>
             <Image
               floated="left"
