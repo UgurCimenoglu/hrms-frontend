@@ -1,4 +1,4 @@
-import { useFormik } from "formik";
+import { useFormik, Formik } from "formik";
 import React, { useEffect, useState } from "react";
 import * as Yup from "yup";
 import {
@@ -17,6 +17,9 @@ import WorkingTimeService from "../../services/workingTimeService";
 import WorkingTypeService from "../../services/workingTypeService";
 import JobAdvertisementService from "../../services/jobAdvertisementService";
 import EmployerJobAdv from "./EmployerJobAdv";
+import UgurTextInput from "../../utilities/customFormControls/UgurTextInput";
+import UgurDropdownMenu from "../../utilities/customFormControls/UgurDropdownMenu";
+import UgurRadioButton from "../../utilities/customFormControls/UgurRadioButton";
 
 export default function EmployerAddJob() {
   const [jobAdvertisement, setJobAdvertisement] = useState(false);
@@ -96,48 +99,31 @@ export default function EmployerAddJob() {
     active: Yup.boolean().required("Boş Geçilemez"),
   });
 
-  const JobAdvFormik = useFormik({
-    initialValues: {
+  const initialValues = {
+    id: "",
+    description: "",
+    city: {
       id: "",
-      description: "",
-      city: {
-        id: "",
-      },
-      jobTitle: {
-        id: "",
-      },
-      workingType: {
-        id: "",
-      },
-      workingTime: {
-        id: "",
-      },
-      employer: {
-        id: 40,
-      },
-      createDate: "",
-      deadline: "",
-      minSalary: "",
-      maxSalary: "",
-      openPosition: "",
-      active: "",
     },
-    validationSchema: AddJobAdvSchema,
-    onSubmit: (values, { resetForm }) => {
-      alert(JSON.stringify(values, null, 2));
-      console.log(JSON.stringify(values));
-      let jobAdvertisementService = new JobAdvertisementService();
-      jobAdvertisementService
-        .addJobAdvertisement(JSON.stringify(values))
-        .then((result) => {
-          console.log(result);
-        })
-        .catch((e) => console.log(e));
-      console.log(JSON.stringify(values));
-      resetForm();
-      console.log(values);
+    jobTitle: {
+      id: "",
     },
-  });
+    workingType: {
+      id: "",
+    },
+    workingTime: {
+      id: "",
+    },
+    employer: {
+      id: 40,
+    },
+    createDate: "",
+    deadline: "",
+    minSalary: "",
+    maxSalary: "",
+    openPosition: "",
+    active: '',
+  };
 
   return (
     <div>
@@ -153,227 +139,285 @@ export default function EmployerAddJob() {
           ></Button>
         </h3>
       </Divider>
-
-      <Modal
-        size="tiny"
-        open={jobAdvertisement}
-        onOpen={() => setJobAdvertisement(true)}
-        onClose={() => {
-          setJobAdvertisement(false);
-          JobAdvFormik.resetForm();
+      <Formik
+        initialValues={initialValues}
+        validationSchema={AddJobAdvSchema}
+        onSubmit={(values) => {
+          console.log(JSON.stringify(values) + "aaaa");
+          // let jobAdvertisementService = new JobAdvertisementService();
+          // jobAdvertisementService
+          //   .addJobAdvertisement(JSON.stringify(values))
+          //   .then((result) => {
+          //     console.log(result);
+          //   })
+          //   .catch((e) => console.log(e));
         }}
       >
-        <Modal.Header>Add Description</Modal.Header>
-        <Modal.Content scrolling>
-          <Form
-            onSubmit={JobAdvFormik.handleSubmit}
-            onReset={JobAdvFormik.handleReset}
-          >
-            <Form.Field>
-              <label>Description</label>
-              <textarea
-                placeholder="Description"
-                name="description"
-                onChange={JobAdvFormik.handleChange}
-                value={JobAdvFormik.values.description}
-              />
-              {JobAdvFormik.touched.description &&
-              JobAdvFormik.errors.description ? (
-                <Label basic color="red" pointing>
-                  {JobAdvFormik.errors.description}
-                </Label>
-              ) : null}
-            </Form.Field>
-            <Form.Field>
-              <label>City Name</label>
-              <Dropdown
-                defaultValue={JobAdvFormik.values.city.id}
-                placeholder="City"
-                name="city.id"
-                id="city"
-                selection
-                options={city}
-                onChange={(e, { name, value }) =>
-                  JobAdvFormik.setFieldValue(name, value)
-                }
-              />
-              {JobAdvFormik.touched.city && JobAdvFormik.errors.city ? (
-                <Label basic color="red" pointing>
-                  {JobAdvFormik.errors.city.id}
-                </Label>
-              ) : null}
-            </Form.Field>
-            <Form.Field>
-              <label>Job Position</label>
-              <Dropdown
-                defaultValue={JobAdvFormik.values.jobTitle.id}
-                placeholder="Position"
-                selection
-                options={jobtitle}
-                name="jobTitle.id"
-                onChange={(e, { name, value }) =>
-                  JobAdvFormik.setFieldValue(name, value)
-                }
-              />
-              {JobAdvFormik.touched.jobTitle && JobAdvFormik.errors.jobTitle ? (
-                <Label basic color="red" pointing>
-                  {JobAdvFormik.errors.jobTitle.id}
-                </Label>
-              ) : null}
-            </Form.Field>
-            <Form.Field>
-              <label>Working Time</label>
-              <Dropdown
-                defaultValue={JobAdvFormik.values.workingTime.id}
-                placeholder="Working Time"
-                selection
-                options={workingTime}
-                name="workingTime.id"
-                onChange={(e, { name, value }) =>
-                  JobAdvFormik.setFieldValue(name, value)
-                }
-              />
-              {JobAdvFormik.touched.workingTime &&
-              JobAdvFormik.errors.workingTime ? (
-                <Label basic color="red" pointing>
-                  {JobAdvFormik.errors.workingTime.id}
-                </Label>
-              ) : null}
-            </Form.Field>
-            <Form.Field>
-              <label>Working Type</label>
-              <Dropdown
-                defaultValue={JobAdvFormik.values.workingType.id}
-                placeholder="Working Type"
-                selection
-                options={workingType}
-                name="workingType.id"
-                onChange={(e, { name, value }) =>
-                  JobAdvFormik.setFieldValue(name, value)
-                }
-              />
-              {JobAdvFormik.touched.workingType &&
-              JobAdvFormik.errors.workingType ? (
-                <Label basic color="red" pointing>
-                  {JobAdvFormik.errors.workingType.id}
-                </Label>
-              ) : null}
-            </Form.Field>
-            <Form.Field>
-              <label>Create Date</label>
-              <input
-                type="date"
-                placeholder="Create Date"
-                name="createDate"
-                onChange={JobAdvFormik.handleChange}
-                value={JobAdvFormik.values.createDate}
-              />
-              {JobAdvFormik.touched.createDate &&
-              JobAdvFormik.errors.createDate ? (
-                <Label basic color="red" pointing>
-                  {JobAdvFormik.errors.createDate}
-                </Label>
-              ) : null}
-            </Form.Field>
-            <Form.Field>
-              <label>Deadline</label>
-              <input
-                type="date"
-                placeholder="Deadlnie"
-                name="deadline"
-                onChange={JobAdvFormik.handleChange}
-                value={JobAdvFormik.values.deadline}
-              />
-              {JobAdvFormik.touched.deadline && JobAdvFormik.errors.deadline ? (
-                <Label basic color="red" pointing>
-                  {JobAdvFormik.errors.deadline}
-                </Label>
-              ) : null}
-            </Form.Field>
-            <Form.Field>
-              <label>Min Salary</label>
-              <input
-                type="number"
-                placeholder="Min Salary"
-                name="minSalary"
-                onChange={JobAdvFormik.handleChange}
-                value={JobAdvFormik.values.minSalary}
-              />
-              {JobAdvFormik.touched.minSalary &&
-              JobAdvFormik.errors.minSalary ? (
-                <Label basic color="red" pointing>
-                  {JobAdvFormik.errors.minSalary}
-                </Label>
-              ) : null}
-            </Form.Field>
-            <Form.Field>
-              <label>Max Salary</label>
-              <input
-                type="number"
-                placeholder="Max Salary"
-                name="maxSalary"
-                onChange={JobAdvFormik.handleChange}
-                value={JobAdvFormik.values.maxSalary}
-              />
-              {JobAdvFormik.touched.maxSalary &&
-              JobAdvFormik.errors.maxSalary ? (
-                <Label basic color="red" pointing>
-                  {JobAdvFormik.errors.maxSalary}
-                </Label>
-              ) : null}
-            </Form.Field>
-            <Form.Field>
-              <label>Open Position</label>
-              <input
-                type="number"
-                placeholder="Number of Open Positions"
-                name="openPosition"
-                onChange={JobAdvFormik.handleChange}
-                value={JobAdvFormik.values.openPosition}
-              />
-              {JobAdvFormik.touched.openPosition &&
-              JobAdvFormik.errors.openPosition ? (
-                <Label basic color="red" pointing>
-                  {JobAdvFormik.errors.openPosition}
-                </Label>
-              ) : null}
-            </Form.Field>
-            <Form.Field>
-              <label>Active</label>
-              <Radio
-                slider
-                name="active"
-                defaultChecked={true}
-                onChange={(e, { name, checked }) =>
-                  JobAdvFormik.setFieldValue(name, checked)
-                }
-              />
-              {JobAdvFormik.touched.active && JobAdvFormik.errors.active ? (
-                <Label basic color="red" pointing>
-                  {JobAdvFormik.errors.active}
-                </Label>
-              ) : null}
-            </Form.Field>
-          </Form>
-        </Modal.Content>
-        <Modal.Actions>
-          <Button
-            positive
-            type="submit"
-            onClick={() => JobAdvFormik.handleSubmit()}
-          >
-            Kaydet
-          </Button>
-          <Button negative onClick={() => setJobAdvertisement(false)}>
-            Cancel
-          </Button>
-        </Modal.Actions>
-      </Modal>
+        {(props) => (
+          <div>
+            <Modal
+              size="tiny"
+              open={jobAdvertisement}
+              onOpen={() => setJobAdvertisement(true)}
+              onClose={() => {
+                setJobAdvertisement(false);
+              }}
+            >
+              <Modal.Header>Add Description</Modal.Header>
+              <Modal.Content scrolling>
+                <Form>
+                  <UgurTextInput placeholder="Description" name="description" />
+                  <UgurDropdownMenu
+                    placeholder="City"
+                    id="city"
+                    name="city.id"
+                    selection
+                    options={city}
+                    onChange={(e, { name, value }) =>
+                      props.setFieldValue(name, value)
+                    }
+                  />
+                  <UgurDropdownMenu
+                    placeholder="Position"
+                    selection
+                    options={jobtitle}
+                    name="jobTitle.id"
+                    onChange={(e, { name, value }) =>
+                      props.setFieldValue(name, value)
+                    }
+                  />
+                  <UgurDropdownMenu
+                    placeholder="Working Time"
+                    selection
+                    options={workingTime}
+                    name="workingTime.id"
+                    onChange={(e, { name, value }) =>
+                      props.setFieldValue(name, value)
+                    }
+                  />
+                  <UgurDropdownMenu
+                    placeholder="Working Type"
+                    selection
+                    options={workingType}
+                    name="workingType.id"
+                    onChange={(e, { name, value }) =>
+                      props.setFieldValue(name, value)
+                    }
+                  />
+                  <UgurTextInput type="date" placeholder="Create Date" name="createDate"/>
+                  <UgurTextInput type="date" placeholder="Deadline" name="deadline"/>
+                  <UgurTextInput type="number" placeholder="Min Salary" name="minSalary"/>
+                  <UgurTextInput type="number" placeholder="Max Salary" name="maxSalary"/>
+                  <UgurTextInput type="number" placeholder="Number of Open Positions" name="openPosition"/>
+                  <UgurRadioButton
+                    placeholder="Active"
+                    slider
+                    name="active"
+                    onChange={(e, { name, checked }) =>{
+                      props.setFieldValue(name, checked)
+                      
+                    }
+                    
+                      }
+                  />
+                  {/* <Form.Field>
+                    <label>City Name</label>
+                    <Dropdown
+                      defaultValue={JobAdvFormik.values.city.id}
+                      placeholder="City"
+                      name="city.id"
+                      id="city"
+                      selection
+                      options={city}
+                      onChange={(e, { name, value }) =>
+                        JobAdvFormik.setFieldValue(name, value)
+                      }
+                    />
+                    {JobAdvFormik.touched.city && JobAdvFormik.errors.city ? (
+                      <Label basic color="red" pointing>
+                        {JobAdvFormik.errors.city.id}
+                      </Label>
+                    ) : null}
+                  </Form.Field>
+                  <Form.Field>
+                    <label>Job Position</label>
+                    <Dropdown
+                      defaultValue={JobAdvFormik.values.jobTitle.id}
+                      placeholder="Position"
+                      selection
+                      options={jobtitle}
+                      name="jobTitle.id"
+                      onChange={(e, { name, value }) =>
+                        JobAdvFormik.setFieldValue(name, value)
+                      }
+                    />
+                    {JobAdvFormik.touched.jobTitle &&
+                    JobAdvFormik.errors.jobTitle ? (
+                      <Label basic color="red" pointing>
+                        {JobAdvFormik.errors.jobTitle.id}
+                      </Label>
+                    ) : null}
+                  </Form.Field>
+                  <Form.Field>
+                    <label>Working Time</label>
+                    <Dropdown
+                      defaultValue={JobAdvFormik.values.workingTime.id}
+                      placeholder="Working Time"
+                      selection
+                      options={workingTime}
+                      name="workingTime.id"
+                      onChange={(e, { name, value }) =>
+                        JobAdvFormik.setFieldValue(name, value)
+                      }
+                    />
+                    {JobAdvFormik.touched.workingTime &&
+                    JobAdvFormik.errors.workingTime ? (
+                      <Label basic color="red" pointing>
+                        {JobAdvFormik.errors.workingTime.id}
+                      </Label>
+                    ) : null}
+                  </Form.Field>
+                  <Form.Field>
+                    <label>Working Type</label>
+                    <Dropdown
+                      defaultValue={JobAdvFormik.values.workingType.id}
+                      placeholder="Working Type"
+                      selection
+                      options={workingType}
+                      name="workingType.id"
+                      onChange={(e, { name, value }) =>
+                        JobAdvFormik.setFieldValue(name, value)
+                      }
+                    />
+                    {JobAdvFormik.touched.workingType &&
+                    JobAdvFormik.errors.workingType ? (
+                      <Label basic color="red" pointing>
+                        {JobAdvFormik.errors.workingType.id}
+                      </Label>
+                    ) : null}
+                  </Form.Field>
+                  <Form.Field>
+                    <label>Create Date</label>
+                    <input
+                      type="date"
+                      placeholder="Create Date"
+                      name="createDate"
+                      onChange={JobAdvFormik.handleChange}
+                      value={JobAdvFormik.values.createDate}
+                    />
+                    {JobAdvFormik.touched.createDate &&
+                    JobAdvFormik.errors.createDate ? (
+                      <Label basic color="red" pointing>
+                        {JobAdvFormik.errors.createDate}
+                      </Label>
+                    ) : null}
+                  </Form.Field>
+                  <Form.Field>
+                    <label>Deadline</label>
+                    <input
+                      type="date"
+                      placeholder="Deadline"
+                      name="deadline"
+                      onChange={JobAdvFormik.handleChange}
+                      value={JobAdvFormik.values.deadline}
+                    />
+                    {JobAdvFormik.touched.deadline &&
+                    JobAdvFormik.errors.deadline ? (
+                      <Label basic color="red" pointing>
+                        {JobAdvFormik.errors.deadline}
+                      </Label>
+                    ) : null}
+                  </Form.Field>
+                  <Form.Field>
+                    <label>Min Salary</label>
+                    <input
+                      type="number"
+                      placeholder="Min Salary"
+                      name="minSalary"
+                      onChange={JobAdvFormik.handleChange}
+                      value={JobAdvFormik.values.minSalary}
+                    />
+                    {JobAdvFormik.touched.minSalary &&
+                    JobAdvFormik.errors.minSalary ? (
+                      <Label basic color="red" pointing>
+                        {JobAdvFormik.errors.minSalary}
+                      </Label>
+                    ) : null}
+                  </Form.Field>
+                  <Form.Field>
+                    <label>Max Salary</label>
+                    <input
+                      type="number"
+                      placeholder="Max Salary"
+                      name="maxSalary"
+                      onChange={JobAdvFormik.handleChange}
+                      value={JobAdvFormik.values.maxSalary}
+                    />
+                    {JobAdvFormik.touched.maxSalary &&
+                    JobAdvFormik.errors.maxSalary ? (
+                      <Label basic color="red" pointing>
+                        {JobAdvFormik.errors.maxSalary}
+                      </Label>
+                    ) : null}
+                  </Form.Field>
+                  <Form.Field>
+                    <label>Open Position</label>
+                    <input
+                      type="number"
+                      placeholder="Number of Open Positions"
+                      name="openPosition"
+                      onChange={JobAdvFormik.handleChange}
+                      value={JobAdvFormik.values.openPosition}
+                    />
+                    {JobAdvFormik.touched.openPosition &&
+                    JobAdvFormik.errors.openPosition ? (
+                      <Label basic color="red" pointing>
+                        {JobAdvFormik.errors.openPosition}
+                      </Label>
+                    ) : null}
+                  </Form.Field>
+                  <Form.Field> 
+                    <label>Active</label>
+                    <Radio
+                      slider
+                      name="active"
+                      defaultChecked={true}
+                      onChange={(e, { name, checked }) =>
+                        JobAdvFormik.setFieldValue(name, checked)
+                      }
+                    />
+                    {JobAdvFormik.touched.active &&
+                    JobAdvFormik.errors.active ? (
+                      <Label basic color="red" pointing>
+                        {JobAdvFormik.errors.active}
+                      </Label>
+                    ) : null}
+                  </Form.Field>*/}
+                </Form>
+              </Modal.Content>
+              <Modal.Actions>
+                <Button
+                  positive
+                  type="submit"
+                  onClick={() => {
+                    props.handleSubmit();
+                  }}
+                >
+                  Kaydet
+                </Button>
+                <Button negative onClick={() => setJobAdvertisement(false)}>
+                  Cancel
+                </Button>
+              </Modal.Actions>
+            </Modal>
 
-      <EmployerJobAdv
-        handleModalOpen={setJobAdvertisement}
-        handleformikValues={JobAdvFormik.setFieldValue}
-      />
+            <EmployerJobAdv
+              handleModalOpen={setJobAdvertisement}
+              handleformikValues={props.setFieldValue}
+            />
+          </div>
+        )}
+      </Formik>
     </div>
   );
 }
