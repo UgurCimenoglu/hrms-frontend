@@ -1,6 +1,6 @@
 import { Formik } from "formik";
 import React, { useState } from "react";
-import { Button, Divider, Form, Icon, Modal } from "semantic-ui-react";
+import { Button, Divider, Form, Icon, Modal,Header } from "semantic-ui-react";
 import * as Yup from "yup";
 import UgurTextInput from "../../../utilities/customFormControls/UgurTextInput";
 import CandidateLanguageCard from "./CandidateLanguageCard";
@@ -8,7 +8,7 @@ import LanguageService from "../../../services/languageService";
 
 export default function CandidateLanguage() {
   const [langOpen, setLangOpen] = useState(false);
-
+  const [deleteOpen, setDeleteOpen] = useState(false);
   const initialValues = {
     candidateCurriculumVitaes: {
       id: 36,
@@ -89,9 +89,38 @@ export default function CandidateLanguage() {
                 </Button>
               </Modal.Actions>
             </Modal>
+            <Modal
+              open={deleteOpen}
+              basic
+              size="small"
+              onClose={() => {
+                setDeleteOpen(false);
+              }}
+            >
+              <Header icon>
+                <Icon name="archive" />
+                Silmek istediğinize emin misiniz?
+              </Header>
+              
+              <Modal.Actions>
+                <Button  color="red" inverted onClick={() => {setDeleteOpen(false)}}>
+                  <Icon name="remove" /> No
+                </Button>
+                <Button
+                  color="green"
+                  inverted
+                  onClick={() => {
+                   
+                  }}
+                >
+                  <Icon name="checkmark" /> Yes
+                </Button>
+              </Modal.Actions>
+            </Modal>
             <CandidateLanguageCard
               setFieldValue={props.setFieldValue}
               setLangOpen={setLangOpen}
+              deleteOpen={setDeleteOpen}
             />
           </div>
         )}

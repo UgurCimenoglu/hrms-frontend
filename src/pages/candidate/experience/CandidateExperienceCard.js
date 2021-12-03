@@ -4,18 +4,14 @@ import { Button, Card, Image } from "semantic-ui-react";
 import ExperienceService from "../../../services/experienceService";
 
 export default function CandidateExperienceCard(props) {
-  const [experiences, setExperiences] = useState([]);
-  const { setFieldValue,expOpen } = props;
-
+  const { setFieldValue,expOpen,deleteOpen } = props;
+  const [experiences,setExperiences] = useState([]);
   useEffect(() => {
-    const experienceService = new ExperienceService();
-    experienceService
-      .getAllByCvIdLeaveDateDesc(36)
-      .then((result) => setExperiences(result.data.data))
-      .catch((e) => console.log(e));
-  }, []);
+    setExperiences(props.experiences);
+  }, [props.experiences]);
 
   const setFieldValues = (experience) => {
+    setFieldValue("id", experience.id)
     setFieldValue("workplaceName" , experience.workplaceName);
     setFieldValue("positionName" , experience.positionName);
     setFieldValue("startDate" , experience.startDate?Moment(experience.startDate).format("YYYY-MM-DD"):"");
@@ -27,7 +23,7 @@ export default function CandidateExperienceCard(props) {
       {experiences.map((experience) => (
         <Card key={experience.id} fluid>
           <Card.Content>
-            <Button inverted icon="delete" color="red" floated="right"></Button>
+            <Button inverted icon="delete" color="red" floated="right" onClick={()=>{ deleteOpen(true); setFieldValues(experience) }}></Button>
             <Button
               inverted
               icon="edit"

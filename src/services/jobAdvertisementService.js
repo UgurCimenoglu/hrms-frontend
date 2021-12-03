@@ -27,4 +27,10 @@ export default class JobAdvertisementService {
       `http://localhost:8081/api/jobadvertisements/findAllByIsActiveAndEmployerId?employerId=${employerId}&isActive=${isActive}`
     );
   }
+
+  deleteById(id) {
+    return axios.delete(
+      `http://localhost:8081/api/jobadvertisements/delete?id=${id}`
+    );
+  }
 }

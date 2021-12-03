@@ -14,4 +14,8 @@ export default class ExperienceService {
     };
     return axios.post(`http://localhost:8081/api/experience/add`,experience,{headers});
   }
+
+  deleteById(id){
+    return axios.delete(`http://localhost:8081/api/experience/delete?id=${id}`);
+  }
 }

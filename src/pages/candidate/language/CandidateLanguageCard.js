@@ -4,7 +4,7 @@ import LanguageService from "../../../services/languageService";
 
 export default function CandidateLanguageCard(props) {
   const [languages, setLanguages] = useState([]);
-
+  const {deleteOpen} = props;
   useEffect(() => {
     const languageService = new LanguageService();
     languageService
@@ -23,7 +23,7 @@ export default function CandidateLanguageCard(props) {
       {languages.map((language) => (
         <Card key={language.id} fluid>
           <Card.Content>
-            <Button inverted icon="delete" color="red" floated="right"></Button>
+            <Button inverted icon="delete" color="red" floated="right" onClick={()=>{deleteOpen(true)}} ></Button>
             <Button
               inverted
               icon="edit"

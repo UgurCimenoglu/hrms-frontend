@@ -1,9 +1,10 @@
 import { Formik } from "formik";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Button,
   Divider,
   Form,
+  Header,
   Icon,
   Modal,
 } from "semantic-ui-react";
@@ -12,9 +13,16 @@ import * as Yup from "yup";
 import UgurTextInput from "../../../utilities/customFormControls/UgurTextInput";
 import CandidateExperienceCard from "./CandidateExperienceCard";
 import ExperienceService from "../../../services/experienceService";
+import { toast } from "react-toastify";
 
 export default function CandidateExperience() {
   const [expOpen, setExpOpen] = useState(false);
+  const [deleteOpen, setDeleteOpen] = useState(false);
+  const [experiences, setExperiences] = useState([]);
+
+useEffect(()=>{
+  getExperiences();
+},[])
 
   const initialValues = {
     candidateCurriculumVitaes: {
@@ -38,6 +46,38 @@ export default function CandidateExperience() {
     leaveDate: Yup.date().notRequired(),
   });
 
+function getExperiences(){
+  const experienceService = new ExperienceService();
+  experienceService.getAllByCvIdLeaveDateDesc(36)
+  .then(result=>setExperiences(result.data.data))
+  .catch(e=>console.log(e))
+}
+
+function addOrUpdate(values){
+  const experienceService = new ExperienceService();
+  experienceService.add(values)
+  .then(result=>{
+    if (result.data.success) {
+      getExperiences();
+      setExpOpen(false);
+      toast.success(result.data.message);
+      
+    }
+  })
+}
+
+function deleteExp(id){
+  const experienceService = new ExperienceService();
+  experienceService.deleteById(id)
+  .then(result=>{
+    if (result.data.success) {
+      toast.success(result.data.message);
+      getExperiences();
+      setDeleteOpen(false);
+    }
+  })
+}
+
   return (
     <div>
       <Divider horizontal>
@@ -56,8 +96,8 @@ export default function CandidateExperience() {
         initialValues={initialValues}
         validationSchema={experienceSchema}
         onSubmit={(values) => {
-          const experienceService = new ExperienceService()
-          experienceService.add(JSON.stringify(values)).then(result=>console.log(result)).catch(e=>console.log(e))
+          addOrUpdate(values);
+          
         }}
       >
         {(props) => (
@@ -107,9 +147,39 @@ export default function CandidateExperience() {
                 </Button>
               </Modal.Actions>
             </Modal>
+            <Modal
+              open={deleteOpen}
+              basic
+              size="small"
+              onClose={() => {
+                setDeleteOpen(false);
+              }}
+            >
+              <Header icon>
+                <Icon name="archive" />
+                Silmek istediğinize emin misiniz?
+              </Header>
+              
+              <Modal.Actions>
+                <Button  color="red" inverted onClick={() => {setDeleteOpen(false)}}>
+                  <Icon name="remove" /> No
+                </Button>
+                <Button
+                  color="green"
+                  inverted
+                  onClick={() => {
+                    deleteExp(props.values.id)
+                  }}
+                >
+                  <Icon name="checkmark" /> Yes
+                </Button>
+              </Modal.Actions>
+            </Modal>
             <CandidateExperienceCard
               expOpen={setExpOpen}
               setFieldValue={props.setFieldValue}
+              experiences={experiences}
+              deleteOpen={setDeleteOpen}
             />
           </div>
         )}

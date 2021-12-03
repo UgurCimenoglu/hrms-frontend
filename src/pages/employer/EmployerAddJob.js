@@ -1,16 +1,7 @@
-import { useFormik, Formik } from "formik";
+import { Formik } from "formik";
 import React, { useEffect, useState } from "react";
 import * as Yup from "yup";
-import {
-  Button,
-  Divider,
-  Dropdown,
-  Form,
-  Icon,
-  Label,
-  Modal,
-  Radio,
-} from "semantic-ui-react";
+import { Button, Divider, Form, Header, Icon, Modal } from "semantic-ui-react";
 import CityService from "../../services/citySevice";
 import JobTitleService from "../../services/jobTitleService";
 import WorkingTimeService from "../../services/workingTimeService";
@@ -20,16 +11,21 @@ import EmployerJobAdv from "./EmployerJobAdv";
 import UgurTextInput from "../../utilities/customFormControls/UgurTextInput";
 import UgurDropdownMenu from "../../utilities/customFormControls/UgurDropdownMenu";
 import UgurRadioButton from "../../utilities/customFormControls/UgurRadioButton";
+import { toast } from "react-toastify";
 
 export default function EmployerAddJob() {
-  const [jobAdvertisement, setJobAdvertisement] = useState(false);
+  const [jobAdvertisementModal, setJobAdvertisementModal] = useState(false);
   const [city, setCity] = useState([]);
   const [jobtitle, setJobTitle] = useState([]);
   const [workingTime, setWorkingTime] = useState([]);
   const [workingType, setWorkingType] = useState([]);
+  const [jobAdvertisements, setJobAdvertisements] = useState([]);
+  const [deleteOpen, setDeleteOpen] = useState(false);
 
   //Burada servisten gelen datayı dropdown'a uygun şekilde yeni bir array object'e çeviriyorum ve useEffect ile city sabitine atıyorum.
   useEffect(() => {
+    getJobAdvertisements();
+
     let cityService = new CityService();
     cityService
       .getAllCities()
@@ -70,6 +66,38 @@ export default function EmployerAddJob() {
       )
       .then((workingTypes) => setWorkingType(workingTypes));
   }, []);
+
+  function getJobAdvertisements() {
+    let jobAdvService = new JobAdvertisementService();
+    jobAdvService
+      .getAllByIsActiveAndEmployerId(40, true)
+      .then((result) => setJobAdvertisements(result.data.data));
+  }
+
+  function addOrUpdate(values) {
+    console.log(JSON.stringify(values));
+    let jobAdvertisementService = new JobAdvertisementService();
+    jobAdvertisementService.addJobAdvertisement(JSON.stringify(values))
+    .then((result) => {
+      getJobAdvertisements();
+      setJobAdvertisementModal(false);
+      toast.success(result.data.message )
+    }).catch(e=>{
+      toast.error("Hata oluştu, tekrar deneyiniz...")
+    })
+  }
+
+  function deleteJobAdv(id) {
+    let jobAdvertisementService = new JobAdvertisementService();
+    jobAdvertisementService.deleteById(id)
+    .then((result) => {
+      getJobAdvertisements();
+      setDeleteOpen(false);
+      toast.success(result.data.message )
+    }).catch(e=>{
+      toast.error("Hata oluştu, tekrar deneyiniz...")
+    })
+  }
 
   const AddJobAdvSchema = Yup.object().shape({
     description: Yup.string()
@@ -122,7 +150,7 @@ export default function EmployerAddJob() {
     minSalary: "",
     maxSalary: "",
     openPosition: "",
-    active: '',
+    active: "",
   };
 
   return (
@@ -135,32 +163,27 @@ export default function EmployerAddJob() {
             size="small"
             icon="add"
             color="grey"
-            onClick={() => setJobAdvertisement(true)}
+            onClick={() => setJobAdvertisementModal(true)}
           ></Button>
         </h3>
       </Divider>
       <Formik
         initialValues={initialValues}
         validationSchema={AddJobAdvSchema}
-        onSubmit={(values) => {
-          console.log(JSON.stringify(values) + "aaaa");
-          // let jobAdvertisementService = new JobAdvertisementService();
-          // jobAdvertisementService
-          //   .addJobAdvertisement(JSON.stringify(values))
-          //   .then((result) => {
-          //     console.log(result);
-          //   })
-          //   .catch((e) => console.log(e));
+        onSubmit={async (values) => {
+          await addOrUpdate(values);
+          getJobAdvertisements();
         }}
       >
         {(props) => (
           <div>
             <Modal
               size="tiny"
-              open={jobAdvertisement}
-              onOpen={() => setJobAdvertisement(true)}
+              open={jobAdvertisementModal}
+              onOpen={() => setJobAdvertisementModal(true)}
               onClose={() => {
-                setJobAdvertisement(false);
+                setJobAdvertisementModal(false);
+                props.resetForm();
               }}
             >
               <Modal.Header>Add Description</Modal.Header>
@@ -204,195 +227,39 @@ export default function EmployerAddJob() {
                       props.setFieldValue(name, value)
                     }
                   />
-                  <UgurTextInput type="date" placeholder="Create Date" name="createDate"/>
-                  <UgurTextInput type="date" placeholder="Deadline" name="deadline"/>
-                  <UgurTextInput type="number" placeholder="Min Salary" name="minSalary"/>
-                  <UgurTextInput type="number" placeholder="Max Salary" name="maxSalary"/>
-                  <UgurTextInput type="number" placeholder="Number of Open Positions" name="openPosition"/>
+                  <UgurTextInput
+                    type="date"
+                    placeholder="Create Date"
+                    name="createDate"
+                  />
+                  <UgurTextInput
+                    type="date"
+                    placeholder="Deadline"
+                    name="deadline"
+                  />
+                  <UgurTextInput
+                    type="number"
+                    placeholder="Min Salary"
+                    name="minSalary"
+                  />
+                  <UgurTextInput
+                    type="number"
+                    placeholder="Max Salary"
+                    name="maxSalary"
+                  />
+                  <UgurTextInput
+                    type="number"
+                    placeholder="Number of Open Positions"
+                    name="openPosition"
+                  />
                   <UgurRadioButton
                     placeholder="Active"
                     slider
                     name="active"
-                    onChange={(e, { name, checked }) =>{
-                      props.setFieldValue(name, checked)
-                      
-                    }
-                    
-                      }
+                    onChange={(e, { name, checked }) => {
+                      props.setFieldValue(name, checked);
+                    }}
                   />
-                  {/* <Form.Field>
-                    <label>City Name</label>
-                    <Dropdown
-                      defaultValue={JobAdvFormik.values.city.id}
-                      placeholder="City"
-                      name="city.id"
-                      id="city"
-                      selection
-                      options={city}
-                      onChange={(e, { name, value }) =>
-                        JobAdvFormik.setFieldValue(name, value)
-                      }
-                    />
-                    {JobAdvFormik.touched.city && JobAdvFormik.errors.city ? (
-                      <Label basic color="red" pointing>
-                        {JobAdvFormik.errors.city.id}
-                      </Label>
-                    ) : null}
-                  </Form.Field>
-                  <Form.Field>
-                    <label>Job Position</label>
-                    <Dropdown
-                      defaultValue={JobAdvFormik.values.jobTitle.id}
-                      placeholder="Position"
-                      selection
-                      options={jobtitle}
-                      name="jobTitle.id"
-                      onChange={(e, { name, value }) =>
-                        JobAdvFormik.setFieldValue(name, value)
-                      }
-                    />
-                    {JobAdvFormik.touched.jobTitle &&
-                    JobAdvFormik.errors.jobTitle ? (
-                      <Label basic color="red" pointing>
-                        {JobAdvFormik.errors.jobTitle.id}
-                      </Label>
-                    ) : null}
-                  </Form.Field>
-                  <Form.Field>
-                    <label>Working Time</label>
-                    <Dropdown
-                      defaultValue={JobAdvFormik.values.workingTime.id}
-                      placeholder="Working Time"
-                      selection
-                      options={workingTime}
-                      name="workingTime.id"
-                      onChange={(e, { name, value }) =>
-                        JobAdvFormik.setFieldValue(name, value)
-                      }
-                    />
-                    {JobAdvFormik.touched.workingTime &&
-                    JobAdvFormik.errors.workingTime ? (
-                      <Label basic color="red" pointing>
-                        {JobAdvFormik.errors.workingTime.id}
-                      </Label>
-                    ) : null}
-                  </Form.Field>
-                  <Form.Field>
-                    <label>Working Type</label>
-                    <Dropdown
-                      defaultValue={JobAdvFormik.values.workingType.id}
-                      placeholder="Working Type"
-                      selection
-                      options={workingType}
-                      name="workingType.id"
-                      onChange={(e, { name, value }) =>
-                        JobAdvFormik.setFieldValue(name, value)
-                      }
-                    />
-                    {JobAdvFormik.touched.workingType &&
-                    JobAdvFormik.errors.workingType ? (
-                      <Label basic color="red" pointing>
-                        {JobAdvFormik.errors.workingType.id}
-                      </Label>
-                    ) : null}
-                  </Form.Field>
-                  <Form.Field>
-                    <label>Create Date</label>
-                    <input
-                      type="date"
-                      placeholder="Create Date"
-                      name="createDate"
-                      onChange={JobAdvFormik.handleChange}
-                      value={JobAdvFormik.values.createDate}
-                    />
-                    {JobAdvFormik.touched.createDate &&
-                    JobAdvFormik.errors.createDate ? (
-                      <Label basic color="red" pointing>
-                        {JobAdvFormik.errors.createDate}
-                      </Label>
-                    ) : null}
-                  </Form.Field>
-                  <Form.Field>
-                    <label>Deadline</label>
-                    <input
-                      type="date"
-                      placeholder="Deadline"
-                      name="deadline"
-                      onChange={JobAdvFormik.handleChange}
-                      value={JobAdvFormik.values.deadline}
-                    />
-                    {JobAdvFormik.touched.deadline &&
-                    JobAdvFormik.errors.deadline ? (
-                      <Label basic color="red" pointing>
-                        {JobAdvFormik.errors.deadline}
-                      </Label>
-                    ) : null}
-                  </Form.Field>
-                  <Form.Field>
-                    <label>Min Salary</label>
-                    <input
-                      type="number"
-                      placeholder="Min Salary"
-                      name="minSalary"
-                      onChange={JobAdvFormik.handleChange}
-                      value={JobAdvFormik.values.minSalary}
-                    />
-                    {JobAdvFormik.touched.minSalary &&
-                    JobAdvFormik.errors.minSalary ? (
-                      <Label basic color="red" pointing>
-                        {JobAdvFormik.errors.minSalary}
-                      </Label>
-                    ) : null}
-                  </Form.Field>
-                  <Form.Field>
-                    <label>Max Salary</label>
-                    <input
-                      type="number"
-                      placeholder="Max Salary"
-                      name="maxSalary"
-                      onChange={JobAdvFormik.handleChange}
-                      value={JobAdvFormik.values.maxSalary}
-                    />
-                    {JobAdvFormik.touched.maxSalary &&
-                    JobAdvFormik.errors.maxSalary ? (
-                      <Label basic color="red" pointing>
-                        {JobAdvFormik.errors.maxSalary}
-                      </Label>
-                    ) : null}
-                  </Form.Field>
-                  <Form.Field>
-                    <label>Open Position</label>
-                    <input
-                      type="number"
-                      placeholder="Number of Open Positions"
-                      name="openPosition"
-                      onChange={JobAdvFormik.handleChange}
-                      value={JobAdvFormik.values.openPosition}
-                    />
-                    {JobAdvFormik.touched.openPosition &&
-                    JobAdvFormik.errors.openPosition ? (
-                      <Label basic color="red" pointing>
-                        {JobAdvFormik.errors.openPosition}
-                      </Label>
-                    ) : null}
-                  </Form.Field>
-                  <Form.Field> 
-                    <label>Active</label>
-                    <Radio
-                      slider
-                      name="active"
-                      defaultChecked={true}
-                      onChange={(e, { name, checked }) =>
-                        JobAdvFormik.setFieldValue(name, checked)
-                      }
-                    />
-                    {JobAdvFormik.touched.active &&
-                    JobAdvFormik.errors.active ? (
-                      <Label basic color="red" pointing>
-                        {JobAdvFormik.errors.active}
-                      </Label>
-                    ) : null}
-                  </Form.Field>*/}
                 </Form>
               </Modal.Content>
               <Modal.Actions>
@@ -405,15 +272,52 @@ export default function EmployerAddJob() {
                 >
                   Kaydet
                 </Button>
-                <Button negative onClick={() => setJobAdvertisement(false)}>
+                <Button
+                  negative
+                  onClick={() => {
+                    setJobAdvertisementModal(false);
+                    props.resetForm();
+                  }}
+                >
                   Cancel
                 </Button>
               </Modal.Actions>
             </Modal>
 
+            <Modal
+              open={deleteOpen}
+              basic
+              size="small"
+              onClose={() => {
+                setDeleteOpen(false);
+              }}
+            >
+              <Header icon>
+                <Icon name="archive" />
+                Silmek istediğinize emin misiniz?
+              </Header>
+
+              <Modal.Actions>
+                <Button color="red" inverted onClick={() => {}}>
+                  <Icon name="remove" /> No
+                </Button>
+                <Button
+                  color="green"
+                  inverted
+                  onClick={() => {
+                    deleteJobAdv(props.values.id);
+                  }}
+                >
+                  <Icon name="checkmark" /> Yes
+                </Button>
+              </Modal.Actions>
+            </Modal>
+           
             <EmployerJobAdv
-              handleModalOpen={setJobAdvertisement}
+              handleModalOpen={setJobAdvertisementModal}
+              jobAdvertisements={jobAdvertisements}
               handleformikValues={props.setFieldValue}
+              deleteOpen={setDeleteOpen}
             />
           </div>
         )}

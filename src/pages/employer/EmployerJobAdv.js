@@ -2,20 +2,16 @@ import React, { useEffect, useState } from "react";
 import { Button, Card, Image } from "semantic-ui-react";
 import Moment from "moment";
 
-import JobAdvertisementService from "../../services/jobAdvertisementService";
 
 export default function EmployerJobAdv(props) {
-  const [jobAdvertisements, setJobAdvertisements] = useState([]);
+  
+  const [JobAdvs, setJobAdvs] = useState([])
   const { handleformikValues } = props;
   //Burada servisten gelen datayı dropdown'a uygun şekilde yeni bir array object'e çeviriyorum ve useEffect ile city sabitine atıyorum.
   useEffect(() => {
-    let jobAdvService = new JobAdvertisementService();
-    jobAdvService
-      .getAllByIsActiveAndEmployerId(40, true)
-      .then((result) => setJobAdvertisements(result.data.data));
-  }, []);
+    setJobAdvs(props.jobAdvertisements)
+  }, [props.jobAdvertisements]);
 
-  console.log(jobAdvertisements)
   const setCurrentValues = (jobAdv) => {
     handleformikValues("id", jobAdv.id);
     handleformikValues("description", jobAdv.description);
@@ -40,7 +36,7 @@ export default function EmployerJobAdv(props) {
   return (
     <div>
       <Card.Group>
-        {jobAdvertisements.map((jobAdv) => (
+        {JobAdvs.map((jobAdv) => (
           <Card key={jobAdv.id} fluid>
             <Card.Content>
               <Button
@@ -48,6 +44,10 @@ export default function EmployerJobAdv(props) {
                 icon="delete"
                 color="red"
                 floated="right"
+                onClick={()=>{
+                  props.deleteOpen(true)
+                  setCurrentValues(jobAdv)
+                }}
               ></Button>
               <Button
                 inverted

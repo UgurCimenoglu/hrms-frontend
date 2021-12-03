@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Button, Divider, Form, Header, Icon, Modal } from "semantic-ui-react";
+import { toast } from "react-toastify";
 import { Formik } from "formik";
 import * as Yup from "yup";
 import UgurTextInput from "../../../utilities/customFormControls/UgurTextInput";
@@ -45,7 +46,12 @@ export default function CandidateEducation() {
     let eduService = new educationService();
     await eduService
       .add(JSON.stringify(values))
-      .then((result) => console.log(result))
+      .then((result) => {
+        if(result.data.success){
+          setEduOpen(false);
+          toast.success(result.data.message)
+        }
+      })
       .catch((e) => console.log(e));
   }
 
@@ -53,7 +59,10 @@ export default function CandidateEducation() {
     var eduService = new educationService();
     await eduService
       .deleteById(id)
-      .then((result) => console.log(result))
+      .then((result) =>{
+        setDeleteOpen(false);
+        toast.success(result.data.message)
+      })
       .catch((e) => console.log(e));
   }
 

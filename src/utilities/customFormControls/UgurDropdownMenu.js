@@ -3,7 +3,6 @@ import { Dropdown, FormField, Label } from "semantic-ui-react";
 
 export default function UgurDropdownMenu({ ...props }) {
   const [field, meta] = useField(props);
-  console.log({field})
 
   return (
     <FormField>
